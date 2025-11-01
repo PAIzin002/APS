@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>APS - 4° Semestre</title>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  
+  <style>
+    :root {
+        --slate-100: #f1f5f9;
+        --slate-300: #cbd5e1;
+        --slate-400: #94a3b8;
+        --slate-500: #64748b;
+        --slate-600: #475569;
+        --slate-700: #334155;
+        --slate-800: #1e293b;
+        --slate-900: #0f172a;
+        --sky-400: #38bdf8;
+        --sky-500: #0ea5e9;
+        --sky-600: #0284c7;
+        --red-500: #ef4444;
+        --emerald-500: #10b981;
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Inter', sans-serif;
+        background-color: var(--slate-100);
+        color: var(--slate-800);
+        transition: background-color 0.5s ease;
+    }
+
+    body.chovendo {
+        background-color: var(--slate-400);
+    }
+
+    .oculto {
+        display: none !important;
+    }
+
+    /* --- Layout Principal --- */
+    #container-app {
+        display: flex;
+        height: 100vh;
+        overflow: hidden;
+        position: relative;
+        z-index: 1;
+        width: 100%;
+    }
+
+    /* --- Barra Lateral --- */
+    #barra-lateral {
+        background: linear-gradient(to bottom, #1e293b, #0f172a);
+        backdrop-filter: blur(4px);
+        color: white;
+        width: 16rem;
+        min-height: 100vh;
+        padding: 1rem;
+        display: flex;
+        flex-direction: column;
+        position: fixed;
+        transform: translateX(-100%);
+        transition: transform 0.3s ease-in-out;
+        z-index: 50;
+    }
+
+    #barra-lateral.is-open {
+        transform: translateX(0);
+    }
+
+    .cabecalho-barra {
+        display: flex;
+        align-items: center;
+        margin-bottom: 2rem;
+    }
+
+    .cabecalho-barra i {
+        width: 2rem;
+        height: 2rem;
+        margin-right: 0.75rem;
+        color: var(--sky-400);
+    }
+
+    .cabecalho-barra h1 {
+        font-size: 1.25rem;
+        font-weight: 700;
+    }
+
+    #barra-lateral nav {
+        flex-grow: 1;
+    }
+
+    #barra-lateral ul {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .link-navegacao {
+        display: flex;
+        align-items: center;
+        padding: 0.75rem;
+        border-radius: 0.5rem;
+        text-decoration: none;
+        color: white;
+        transition: all 0.3s ease;
+    }
+
+    .link-navegacao:hover {
+        background-color: var(--slate-700);
+    }
+
+    .link-navegacao.ativo {
+        background-color: rgba(14, 165, 233, 0.3);
+        font-weight: 600;
+    }
+
+    .link-navegacao i {
+        width: 1.25rem;
+        height: 1.25rem;
+        transition: transform 0.3s ease;
+    }
+
+    .link-navegacao:hover i {
+        transform: scale(1.2);
+    }
+
+    .rodape-barra {
+        margin-top: auto;
+        font-size: 0.75rem;
+    }
+
+    .rodape-barra p:first-child {
+        color: var(--slate-400);
+    }
+
+    .rodape-barra p:last-child {
+        color: var(--slate-500);
+    }
+
+    .rodape-barra span {
+        font-family: monospace;
+    }
+
+    #sobreposicao {
+        position: fixed;
+        inset: 0;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 40;
+    }
+
+    /* --- Conteúdo Principal --- */
+    #conteudo-principal {
+        flex: 1;
+        padding: 2rem;
+        overflow-y: auto;
+    }
+
+    #conteudo-principal header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 1.5rem;
+    }
+
+    #botao-menu {
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: var(--slate-600);
+    }
+
+    #botao-menu:hover {
+        color: var(--sky-500);
+    }
+
+    #botao-menu i {
+        width: 2rem;
+        height: 2rem;
+    }
+
+    #titulo-pagina {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--slate-700);
+    }
+
+    .wrapper-ultima-atualizacao span {
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: var(--slate-500);
+    }
+
+    /* --- Painel Principal: Grid de Métricas --- */
+    .grid-metricas {
+        display: grid;
+        grid-template-columns: 1fr;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 1.5rem;
+    }
+
+    .cartao-metrica {
+        background-color: white;
+        padding: 1.5rem 2rem;
+        border-radius: 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        transition: all 0.3s ease;
+        box-shadow: #94a3b8;
+    }
+
+    .cartao-metrica:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    }
+
+    /* Centraliza o bloco de texto internamente */
+    .info-metrica {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        text-align: center;
+        flex: 1;
+    }
+
+    .info-metrica p:first-child {
+        font-size: 1rem;
+        color: gray;
+        margin-bottom: 0.3rem;
+    }
+
+    .valor-metrica {
+        font-size: 2rem;
+        font-weight: bold;
+        color: gray;
+    }
+
+    .icone-metrica {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+    }
+
+    .icone-metrica i {
+        width: 2rem;
+        height: 2rem;
+        filter: drop-shadow(0 2px 3px rgba(0,0,0,0.2));
+    }
+
+    .icone-temperatura {
+        background-color: #fee2e2;
+        color: var(--red-500);
+    }
+
+    .icone-humidade {
+        background-color: #d1fae5;
+        color: var(--emerald-500);
+    }
+
+    .icone-chuva {
+        background-color: rgb(185, 235, 255);
+        color: var(--sky-500);
+    }
+
+    /* --- Seção de Histórico --- */
+    .container-historico {
+        background-color: white;
+        padding: 1.5rem;
+        border-radius: 1rem;
+        box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+        transition: background-color 0.5s ease, color 0.5s ease;
+    }
+
+    .cabecalho-historico {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+
+    .cabecalho-historico h3 {
+        font-size: 1.125rem;
+        font-weight: 600;
+        color: var(--slate-700);
+        margin-bottom: 0.75rem;
+    }
+
+    .filtros-historico {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .filtros-historico input {
+        border: 1px solid var(--slate-300);
+        border-radius: 0.5rem;
+        padding: 0.375rem 0.75rem;
+        font-size: 0.875rem;
+    }
+
+    .filtros-historico input:focus {
+        outline: 2px solid var(--sky-500);
+    }
+
+    .filtros-historico button {
+        background-color: var(--sky-500);
+        color: white;
+        padding: 0.375rem 1rem;
+        border: none;
+        border-radius: 0.5rem;
+        font-size: 0.875rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
+
+    .filtros-historico button:hover {
+        background-color: var(--sky-600);
+    }
+
+    .tabela-wrapper {
+        overflow-x: auto;
+    }
+
+    .tabela-historico {
+        width: 100%;
+        font-size: 0.875rem;
+        text-align: left;
+        color: var(--slate-600);
+    }
+
+    .tabela-historico thead {
+        font-size: 0.75rem;
+        color: var(--slate-700);
+        text-transform: uppercase;
+        background-color: var(--slate-100);
+    }
+
+    .tabela-historico th, .tabela-historico td {
+        padding: 0.75rem 1.5rem;
+    }
+
+    .tabela-historico th:first-child {
+        border-top-left-radius: 0.5rem;
+        border-bottom-left-radius: 0.5rem;
+    }
+
+    .tabela-historico th:last-child {
+        border-top-right-radius: 0.5rem;
+        border-bottom-right-radius: 0.5rem;
+    }
+
+    .tabela-historico tbody tr {
+        background-color: white;
+        border-bottom: 1px solid var(--slate-100);
+    }
+
+    .tabela-historico tbody tr:nth-child(even) {
+        background-color: rgba(0,0,0,0.03);
+    }
+
+    .tabela-historico tbody tr:hover {
+        background-color: rgba(14,165,233,0.1);
+    }
+
+    .tabela-historico tbody td:first-child {
+        font-weight: 500;
+        color: var(--slate-900);
+        white-space: nowrap;
+    }
+
+    /* --- Animação de Chuva --- */
+    #container-chuva {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        z-index: 0;
+        pointer-events: none;
+    }
+
+    .raindrop {
+        position: absolute;
+        bottom: 100%;
+        height: 80px;
+        background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0.3));
+        animation-name: cair;
+        animation-timing-function: linear;
+        animation-iteration-count: infinite;
+        filter: blur(0.5px);
+    }
+
+    body.chovendo .cartao-metrica {
+        background-color: rgba(71, 85, 105, 0.7);
+        color: white;
+        border: 1px solid var(--slate-500);
+    }
+
+    body.chovendo .cartao-metrica .info-metrica p:first-child,
+    body.chovendo .cartao-metrica .valor-metrica{
+        color: var(--slate-100);
+    }
+
+    body.chovendo .container-historico {
+        background-color: rgba(71, 85, 105, 0.7);
+        border: 1px solid var(--slate-500);
+    }
+
+    body.chovendo .cabecalho-historico h3,
+    body.chovendo .tabela-historico {
+        color: white;
+    }
+
+    body.chovendo .tabela-historico thead {
+        background-color: transparent;
+        color: var(--slate-300);
+    }
+
+    body.chovendo .tabela-historico tbody tr {
+        background-color: transparent;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    body.chovendo .tabela-historico tbody tr:hover {
+        background-color: rgba(255, 255, 255, 0.05);
+    }
+
+    body.chovendo .tabela-historico tbody td:first-child {
+        color: white;
+    }
+
+    @keyframes cair {
+        to {
+            transform: translateY(110vh);
+        }
+    }
+
+    /* --- Responsividade --- */
+    @media (min-width: 640px) {
+        .grid-metricas {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .cabecalho-historico {
+            flex-direction: row;
+        }
+
+        .cabecalho-historico h3 {
+            margin-bottom: 0;
+        }
+    }
+
+    @media (min-width: 1024px) {
+        #barra-lateral {
+            position: static;
+            transform: translateX(0);
+        }
+
+        #botao-menu, #sobreposicao {
+            display: none;
+        }
+
+        .grid-metricas {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
+
+    @media (min-width: 1280px) {
+        .grid-metricas {
+            grid-template-columns: repeat(3, 1fr);
+        }
+    }
+
+    /* --- Barra de rolagem --- */
+    ::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: var(--slate-100);
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: #94a3b8;
+        border-radius: 10px;
+    }
+
+::-webkit-scrollbar-thumb:hover {
+        background: #64748b;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="container-chuva"></div>
+
+  <div id="container-app">
+    <aside id="barra-lateral">
+      <div class="cabecalho-barra">
+        <i data-lucide="layout-grid"></i>
+        <h1>Menu</h1>
+      </div>
+      <nav>
+        <ul>
+          <li>
+            <a href="#" class="link-navegacao ativo" data-aba="aba-painel">
+              <i data-lucide="house"></i>
+              Painel Principal
+            </a>
+          </li>
+          <li>
+            <a href="#" class="link-navegacao" data-aba="aba-historico">
+              <i data-lucide="history"></i>
+              Histórico
+            </a>
+          </li>
+        </ul>
+      </nav>
+      <div class="rodape-barra">
+        <p>2025 - Dispositivo Local</p>
+      </div>
+    </aside>
+
+    <div id="sobreposicao" class="oculto"></div>
+    
+    <main id="conteudo-principal">
+      <header>
+        <button id="botao-menu">
+          <i data-lucide="menu"></i>
+        </button>
+        <h2 id="titulo-pagina">Painel Principal</h2>
+        <div class="wrapper-ultima-atualizacao">
+          <span>Última atualização: <span id="ultima-atualizacao">--:--:--</span></span>
+        </div>
+      </header>
+
+      <section id="aba-painel" class="conteudo-aba ativo">
+        <div class="grid-metricas">
+          <div class="cartao-metrica">
+            <div class="info-metrica">
+              <p>Temperatura</p>
+              <p id="valor-temperatura" class="valor-metrica">--°C</p>
+            </div>
+            <div class="icone-metrica icone-temperatura">
+              <i data-lucide="thermometer"></i>
+            </div>
+          </div>
+          <div class="cartao-metrica">
+            <div class="info-metrica">
+              <p>Umidade</p>
+              <p id="valor-umidade" class="valor-metrica">--%</p>
+            </div>
+            <div class="icone-metrica icone-humidade">
+              <i data-lucide="wind"></i>
+            </div>
+          </div>
+          <div class="cartao-metrica">
+            <div class="info-metrica">
+              <p>Chuva</p>
+              <p id="valor-chuva" class="valor-metrica">--</p>
+            </div>
+            <div id="wrapper-icone-chuva" class="icone-metrica icone-chuva">
+              <i data-lucide="cloud-off"></i>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="aba-historico" class="conteudo-aba oculto">
+        <div class="container-historico">
+          <div class="cabecalho-historico">
+            <h3>Histórico de Medições</h3>
+            <div class="filtros-historico">
+              <input type="date" id="filtro-data">
+              <button id="botao-filtrar">Filtrar</button>
+            </div>
+          </div>
+          <div class="tabela-wrapper">
+            <table class="tabela-historico">
+              <thead>
+                <tr>
+                  <th>Data e Hora</th>
+                  <th>Temperatura</th>
+                  <th>Umidade</th>
+                </tr>
+              </thead>
+              <tbody id="corpo-tabela-historico">
+                </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

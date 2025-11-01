@@ -1,0 +1,15 @@
+DAL\ClimaDAO.class
+modelo\Serial.class
+apresentacao\frmPrincipal$4.class
+modelo\Chuva.class
+apresentacao\frmPrincipal$2.class
+DAL\ChuvaDAO.class
+apresentacao\frmPrincipal.class
+apresentacao\frmPrincipal$3.class
+estacao\Estacao.class
+apresentacao\frmPrincipal$4$1.class
+modelo\Clima.class
+DAL\ConexaoHibernate.class
+modelo\Estaticos.class
+apresentacao\frmPrincipal$1.class
+modelo\Controle.class

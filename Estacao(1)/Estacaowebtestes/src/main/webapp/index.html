@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>APS - 4° Semestre</title>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Link CSS -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Container da Animação de Chuva -->
+  <div id="container-chuva"></div>
+
+  <div id="container-app">
+    <!-- Menu Lateral -->
+    <aside id="barra-lateral">
+      <div class="cabecalho-barra">
+        <i data-lucide="layout-grid"></i>
+        <h1>Menu</h1>
+      </div>
+      <nav>
+        <ul>
+          <li>
+            <a href="#" class="link-navegacao ativo" data-aba="aba-painel">
+              <i data-lucide="house"></i>
+              Painel Principal
+            </a>
+          </li>
+          <li>
+            <a href="#" class="link-navegacao" data-aba="aba-historico">
+              <i data-lucide="history"></i>
+              Histórico
+            </a>
+          </li>
+        </ul>
+      </nav>
+      <div class="rodape-barra">
+        <p>2025 - Dispositivo Local</p>
+      </div>
+    </aside>
+
+    <!-- Overlay pra fechar o menu no celular -->
+    <div id="sobreposicao" class="oculto"></div>
+    
+    <!-- Conteúdo Principal -->
+    <main id="conteudo-principal">
+      <header>
+        <button id="botao-menu">
+          <i data-lucide="menu"></i>
+        </button>
+        <h2 id="titulo-pagina">Painel Principal</h2>
+        <div class="wrapper-ultima-atualizacao">
+          <span>Última atualização: <span id="ultima-atualizacao">--:--:--</span></span>
+        </div>
+      </header>
+
+      <!-- ABA: Painel Principal -->
+      <section id="aba-painel" class="conteudo-aba ativo">
+        <div class="grid-metricas">
+          <!-- Temperatura -->
+          <div class="cartao-metrica">
+            <div class="info-metrica">
+              <p>Temperatura</p>
+              <p id="valor-temperatura" class="valor-metrica">--°C</p>
+            </div>
+            <div class="icone-metrica icone-temperatura">
+              <i data-lucide="thermometer"></i>
+            </div>
+          </div>
+          <!-- Umidade -->
+          <div class="cartao-metrica">
+            <div class="info-metrica">
+              <p>Umidade</p>
+              <p id="valor-umidade" class="valor-metrica">--%</p>
+            </div>
+            <div class="icone-metrica icone-humidade">
+              <i data-lucide="wind"></i>
+            </div>
+          </div>
+          <!-- Chuva -->
+          <div class="cartao-metrica">
+            <div class="info-metrica">
+              <p>Chuva</p>
+              <p id="valor-chuva" class="valor-metrica">--</p>
+            </div>
+            <div id="wrapper-icone-chuva" class="icone-metrica icone-chuva">
+              <i data-lucide="cloud-off"></i>
+            </div>
+          </div>
+        </div>
+
+        <!-- Gráfico das variáveis -->
+        <div class="grafico-container">
+          <h3>Gráfico das Variáveis Ambientais</h3>
+          <canvas id="graficoSensor"></canvas>
+        </div>
+      </section>
+
+      <!-- ABA: Histórico -->
+      <section id="aba-historico" class="conteudo-aba oculto">
+        <div class="container-historico">
+          <div class="cabecalho-historico">
+            <h3>Histórico de Medições</h3>
+            <div class="filtros-historico">
+              <input type="date" id="filtro-data">
+              <button id="botao-filtrar">Filtrar</button>
+            </div>
+          </div>
+          <div class="tabela-wrapper">
+            <table class="tabela-historico">
+              <thead>
+                <tr>
+                  <th>Data</th> <!-- 🔹 separada -->
+                  <th>Hora</th> <!-- 🔹 nova coluna adicionada -->
+                  <th>Temperatura</th>
+                  <th>Umidade</th>
+                </tr>
+              </thead>
+              <tbody id="corpo-tabela-historico"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
